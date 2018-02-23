@@ -1,0 +1,5 @@
+*.o
+obj/
+libft.obj
+lem-in
+*DS_*
