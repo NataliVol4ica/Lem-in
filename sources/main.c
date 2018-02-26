@@ -15,110 +15,48 @@
 
 #include <stdlib.h>
 
-void	skip_ws(char *line, size_t *i)
+int		parse_comment(char *line, t_antfarm *farm)
 {
-	while (line[*i] && (line[*i] == ' ' || line[*i] == '\t'))
-		*i = *i + 1;
-}
-
-void	free_room(t_room *room)
-{
-	free(room->name);
-	free(room);
-}
-
-_Bool	is_room_unique(t_antfarm *farm, t_room *room)
-{
-	t_list *temp;
-	t_room *troom;
-
-	temp = farm->read_rooms_list;
-	while (temp)
+	if (farm->is_next_start || farm->is_next_finish)
+		return (0);
+	if (ft_strcmp(line, "##start") == 0)
 	{
-		if (!temp->content)
-			continue ;
-		troom = (t_room*)temp->content;
-		if (strcmp(troom->name, room->name) == 0)
+		if (farm->read_rooms_list->content)
 			return (0);
-		if (room->x_coord == troom->x_coord && room->y_coord == troom->y_coord)
+		farm->is_next_start = 1;
+	}
+	if (ft_strcmp(line, "##end") == 0)
+	{
+		if (farm->read_rooms_list->next->content)
 			return (0);
-		temp = temp->next;
+		farm->is_next_finish = 1;
 	}
 	return (1);
 }
 
 int		parse_line(char *line, t_antfarm *farm)
 {
-	t_room	*new_room;
 	char	**split_arr;
-	size_t	i;
+	char	**split_link;
+	size_t	size_of_split_arr;
 	char	*str;
 	char	*str2;
-	t_list	*newl;
 
 	if (line[0] == '#' || line[0] == 'L')
-	{
-		if (farm->is_next_start || farm->is_next_finish) //esli ojidalas room
-			return (0);
-		if (ft_strcmp(line, "##start") == 0)
-		{
-			if (farm->read_rooms_list->content)
-				return (0);
-			farm->is_next_start = 1;
-		}
-		if (ft_strcmp(line, "##end") == 0)
-		{
-			if (farm->read_rooms_list->next->content)
-				return (0);
-			farm->is_next_finish = 1;
-		}
-		return (1);
-	}
+		return (parse_comment(line, farm));
 	split_arr = ft_split_whitespaces(line);
-	free(line);
-	i = 0;
-	while (split_arr[i])
-		i++;
-	
-	if (i == 3) // room
+	size_of_split_arr = 0;
+	while (split_arr[size_of_split_arr])
+		size_of_split_arr++;
+	if (size_of_split_arr == 3) // room
 	{
-		if (farm->finished_room_reading) //esli komnata posle linkov
+		if (!parse_room(farm, split_arr))
 			return (0);
-		if (!is_integer(split_arr[1]) || !is_integer(split_arr[2]))
-			return (0);
-		if (!(new_room = (t_room*)malloc(sizeof(t_room))))
-			mall_error();
-		new_room->name = ft_strdup(split_arr[0]);
-		new_room->x_coord = ft_atoi(split_arr[1]);
-		new_room->y_coord = ft_atoi(split_arr[2]);
-		if (!is_room_unique(farm, new_room))
-		{
-			free_word_arr(split_arr);
-			free_room(new_room);
-			return (0);
-		}
-		newl = ft_lstnew((void*)new_room, sizeof(new_room));
-		if (farm->is_next_start)
-		{
-			farm->is_next_start = 0;
-			newl->next = farm->read_rooms_list->next;
-			ft_lstdelone(&farm->read_rooms_list, NULL);
-			farm->read_rooms_list = newl;
-		}
-		else if (farm->is_next_finish)
-		{
-			farm->is_next_finish = 0;
-			newl->next = farm->read_rooms_list->next->next;
-			ft_lstdelone(&farm->read_rooms_list->next, NULL);
-			farm->read_rooms_list->next = newl;
-		}
-		else
-			ft_lstpushback(&farm->read_rooms_list, newl);
-		farm->num_of_rooms++;
 	}
-	else if (i == 1) //link
+	else if (size_of_split_arr == 1) //link
 	{
 		farm->finished_room_reading = 1;
+
 		//parse link
 		//if names are equal
 		//continue;
@@ -146,6 +84,7 @@ t_antfarm	*init_farm(void)
 	farm->read_rooms_list = NULL;
 	ft_lstpushback(&farm->read_rooms_list, ft_lstnew((void*)0, 0));
 	ft_lstpushback(&farm->read_rooms_list, ft_lstnew((void*)0, 0));
+	farm->num_of_rooms = 2;
 	return (farm);
 }
 
@@ -161,9 +100,13 @@ int		main(int ac, char **av)
 	readlist = NULL;
 	while ((get_next_line(0, &line) > 0))
 	{
-		ft_lstpushback(&readlist, ft_lstnew((void*)line, ft_strlen(line)));
 		if (!parse_line(line, farm))
+		{
+			free(line);
 			break;
+		}
+		ft_lstpushback(&readlist, ft_lstnew((void*)line, ft_strlen(line)));
+		free(line);
 	}
 	//convert read data to struct final mid-form
 	//check if the data is enough

@@ -14,13 +14,21 @@
 # define STRUCTURES_H
 
 # include <string.h>
+# include "libft_structures.h"
 
 typedef struct	s_room
 {
 	char	*name;
 	int		x_coord;
 	int		y_coord;
+	int		index;
 }				t_room;
+
+typedef struct	s_link
+{
+	int		vertex1;
+	int		vertex2;
+}				t_link;
 
 typedef struct	s_graph
 {

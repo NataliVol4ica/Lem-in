@@ -7,7 +7,9 @@ SRCDIR = ./sources
 HFILES = $(patsubst %, $(INCDIR)/%.h, $(HEADERS))
 
 FILENAMES =	main \
-			errors
+			errors \
+			parse_room \
+			tools
 
 CFILES = $(patsubst %, $(SRCDIR)/%.c, $(FILENAMES))
 OFILES = $(patsubst %, $(ODIR)/%.o, $(FILENAMES))

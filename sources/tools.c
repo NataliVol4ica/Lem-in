@@ -1,40 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lemin.h                                            :+:      :+:    :+:   */
+/*   tools.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nkolosov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/13 13:07:11 by nkolosov          #+#    #+#             */
-/*   Updated: 2018/02/13 13:07:11 by nkolosov         ###   ########.fr       */
+/*   Created: 2018/02/26 16:20:45 by nkolosov          #+#    #+#             */
+/*   Updated: 2018/02/26 16:20:45 by nkolosov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LEMIN_H
-# define LEMIN_H
+#include <stdlib.h>
+#include "lemin.h"
 
-# include "structures.h"
+void	skip_ws(char *line, size_t *i)
+{
+	while (line[*i] && (line[*i] == ' ' || line[*i] == '\t'))
+		*i = *i + 1;
+}
 
-/*
-** ROOM PARSING
-*/
-
-int		parse_room(t_antfarm *farm, char **split_arr);
-
-/*
-** TOOLS
-*/
-
-
-void	skip_ws(char *line, size_t *i);
-void	free_room(t_room *room);
-
-/*
-** ERRORS
-*/
-
-void	argnum_error(void);
-void	mall_error(void);
-void	invalid_farm(void);
-
-#endif
+void	free_room(t_room *room)
+{
+	free(room->name);
+	free(room);
+}
