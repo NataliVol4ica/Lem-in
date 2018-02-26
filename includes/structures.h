@@ -40,6 +40,7 @@ typedef struct	s_antfarn
 	t_graph	*init_rooms;
 	_Bool	is_next_start;
 	_Bool	is_next_finish;
+	_Bool	finished_room_reading;
 }				t_antfarm;
 
 #endif

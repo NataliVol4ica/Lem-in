@@ -21,7 +21,7 @@ void	skip_ws(char *line, size_t *i)
 		*i = *i + 1;
 }
 
-int		parse_line(char *line, t_ant_farm *farm)
+int		parse_line(char *line, t_antfarm *farm)
 {
 	t_room	*new_room;
 	char	**split_arr;
@@ -31,21 +31,23 @@ int		parse_line(char *line, t_ant_farm *farm)
 
 	if (line[0] == '#' || line[0] == 'L')
 	{
+		if (farm->is_next_start || farm->is_next_finish) //esli ojidalas room
+			return (0);
 		if (ft_strcmp(line, "##start") == 0)
 		{
-			if (farm->read_rooms_list->data)
+			if (farm->read_rooms_list->content)
 				return (0);
-			farm->is_next_start = true;
+			farm->is_next_start = 1;
 		}
 		if (ft_strcmp(line, "##end") == 0)
 		{
-			if (farm->read_rooms_list->next->data)
+			if (farm->read_rooms_list->next->content)
 				return (0);
-			farm->is_next_finish = true;
+			farm->is_next_finish = 1;
 		}
 		return (1);
 	}
-	split_arr = ft_strsplit(line);
+	split_arr = ft_split_whitespaces(line);
 	free(line);
 	i = 0;
 	while (split_arr[i])
@@ -65,7 +67,7 @@ int		parse_line(char *line, t_ant_farm *farm)
 	else
 		return (0);
 	if (!(new_room = (t_room*)malloc(sizeof(t_room))))
-		malloc_error();
+		mall_error();
 	return (1);
 }
 
@@ -73,19 +75,19 @@ int		main(int ac, char **av)
 {
 	char		*line;
 	t_list		*readlist;
-	t_ant_farm	*farm;
+	t_antfarm	*farm;
 
 	if (ac != 1)
 		argnum_error();
-	if (!(farm = (t_ant_farm*)malloc(sizeof(t_ant_farm))))
-		malloc_error();
+	if (!(farm = (t_antfarm*)malloc(sizeof(t_antfarm))))
+		mall_error();
 	farm->num_of_ants = -1;
 	farm->is_next_start = 0;
 	farm->is_next_finish = 0;
 	farm->finished_room_reading = 0;
 	farm->read_rooms_list = NULL;
-	ft_lstpushback(farm->read_rooms_list, ft_lstnew((void*)0, 0));
-	ft_lstpushback(farm->read_rooms_list, ft_lstnew((void*)0, 0));
+	ft_lstpushback(&farm->read_rooms_list, ft_lstnew((void*)0, 0));
+	ft_lstpushback(&farm->read_rooms_list, ft_lstnew((void*)0, 0));
 	readlist = NULL;
 	while ((get_next_line(0, &line) > 0))
 	{
