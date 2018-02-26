@@ -8,7 +8,10 @@ HFILES = $(patsubst %, $(INCDIR)/%.h, $(HEADERS))
 
 FILENAMES =	main \
 			errors \
+			parse_line \
+			parse_comment \
 			parse_room \
+			parse_link \
 			tools
 
 CFILES = $(patsubst %, $(SRCDIR)/%.c, $(FILENAMES))

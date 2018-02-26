@@ -32,11 +32,11 @@ _Bool	is_integer(char *str)
 		return (1);
 	if (sign == 0)
 	{
-		if (strcmp(str, "2147483647") > 0)
+		if (ft_strcmp(str, "2147483647") > 0)
 			return (0);
 		return (1);
 	}
-	if (strcmp(str, "-2147483648") > 0)
+	if (ft_strcmp(str, "-2147483648") > 0)
 		return (0);
 	return (1);
 }

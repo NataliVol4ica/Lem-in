@@ -14,7 +14,7 @@
 #include "lemin.h"
 #include <stdlib.h>
 
-_Bool	is_room_unique(t_antfarm *farm, t_room *room)
+static _Bool	is_room_unique(t_antfarm *farm, t_room *room)
 {
 	t_list *temp;
 	t_room *troom;
@@ -39,7 +39,7 @@ _Bool	is_room_unique(t_antfarm *farm, t_room *room)
 	return (1);
 }
 
-void	add_start_room(t_antfarm *farm, t_room *new_room)
+static void		add_start_room(t_antfarm *farm, t_room *new_room)
 {
 	t_list	*newl;
 
@@ -52,7 +52,7 @@ void	add_start_room(t_antfarm *farm, t_room *new_room)
 	farm->read_rooms_list = newl;
 }
 
-void	add_finish_room(t_antfarm *farm, t_room *new_room)
+static void		add_finish_room(t_antfarm *farm, t_room *new_room)
 {
 	t_list	*newl;
 
@@ -65,7 +65,7 @@ void	add_finish_room(t_antfarm *farm, t_room *new_room)
 	farm->read_rooms_list->next = newl;
 }
 
-void	add_casual_room(t_antfarm *farm, t_room *new_room)
+static void		add_casual_room(t_antfarm *farm, t_room *new_room)
 {
 	t_list	*newl;
 
@@ -75,7 +75,7 @@ void	add_casual_room(t_antfarm *farm, t_room *new_room)
 	ft_lstpushback(&farm->read_rooms_list, newl);
 }
 
-int		parse_room(t_antfarm *farm, char **split_arr)
+int				parse_room(t_antfarm *farm, char **split_arr)
 {
 	t_room	*new_room;
 

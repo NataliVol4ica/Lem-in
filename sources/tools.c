@@ -19,7 +19,7 @@ t_antfarm	*init_farm(void)
 	t_antfarm	*farm;
 
 	if (!(farm = (t_antfarm*)malloc(sizeof(t_antfarm))))
-		mall_error();	
+		mall_error();
 	farm->read_rooms_list = NULL;
 	farm->link_list = NULL;
 	farm->is_next_start = 0;
