@@ -97,3 +97,13 @@ char		**ft_strsplit(char const *s, char c)
 	ans[num_of_words] = NULL;
 	return (ans);
 }
+
+void		free_word_arr(char **words)
+{
+	int i;
+
+	i = -1;
+	while (words[++i])
+		free(words[i]);
+	free(words);
+}

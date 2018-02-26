@@ -21,6 +21,32 @@ void	skip_ws(char *line, size_t *i)
 		*i = *i + 1;
 }
 
+void	free_room(t_room *room)
+{
+	free(room->name);
+	free(room);
+}
+
+_Bool	is_room_unique(t_antfarm *farm, t_room *room)
+{
+	t_list *temp;
+	t_room *troom;
+
+	temp = farm->read_rooms_list;
+	while (temp)
+	{
+		if (!temp->content)
+			continue ;
+		troom = (t_room*)temp->content;
+		if (strcmp(troom->name, room->name) == 0)
+			return (0);
+		if (room->x_coord == troom->x_coord && room->y_coord == troom->y_coord)
+			return (0);
+		temp = temp->next;
+	}
+	return (1);
+}
+
 int		parse_line(char *line, t_antfarm *farm)
 {
 	t_room	*new_room;
@@ -28,6 +54,7 @@ int		parse_line(char *line, t_antfarm *farm)
 	size_t	i;
 	char	*str;
 	char	*str2;
+	t_list	*newl;
 
 	if (line[0] == '#' || line[0] == 'L')
 	{
@@ -57,18 +84,69 @@ int		parse_line(char *line, t_antfarm *farm)
 	{
 		if (farm->finished_room_reading) //esli komnata posle linkov
 			return (0);
-		//parse room
+		if (!is_integer(split_arr[1]) || !is_integer(split_arr[2]))
+			return (0);
+		if (!(new_room = (t_room*)malloc(sizeof(t_room))))
+			mall_error();
+		new_room->name = ft_strdup(split_arr[0]);
+		new_room->x_coord = ft_atoi(split_arr[1]);
+		new_room->y_coord = ft_atoi(split_arr[2]);
+		if (!is_room_unique(farm, new_room))
+		{
+			free_word_arr(split_arr);
+			free_room(new_room);
+			return (0);
+		}
+		newl = ft_lstnew((void*)new_room, sizeof(new_room));
+		if (farm->is_next_start)
+		{
+			farm->is_next_start = 0;
+			newl->next = farm->read_rooms_list->next;
+			ft_lstdelone(&farm->read_rooms_list, NULL);
+			farm->read_rooms_list = newl;
+		}
+		else if (farm->is_next_finish)
+		{
+			farm->is_next_finish = 0;
+			newl->next = farm->read_rooms_list->next->next;
+			ft_lstdelone(&farm->read_rooms_list->next, NULL);
+			farm->read_rooms_list->next = newl;
+		}
+		else
+			ft_lstpushback(&farm->read_rooms_list, newl);
+		farm->num_of_rooms++;
 	}
 	else if (i == 1) //link
 	{
 		farm->finished_room_reading = 1;
 		//parse link
+		//if names are equal
+		//continue;
+		//search names of the rooms
+		//if no names found
+		//break;
+		//otherwise add link to list
 	}
 	else
 		return (0);
-	if (!(new_room = (t_room*)malloc(sizeof(t_room))))
-		mall_error();
+	free_word_arr(split_arr);
 	return (1);
+}
+
+t_antfarm	*init_farm(void)
+{
+	t_antfarm	*farm;
+
+	if (!(farm = (t_antfarm*)malloc(sizeof(t_antfarm))))
+		mall_error();	
+	farm->num_of_ants = -1;
+	farm->is_next_start = 0;
+	farm->is_next_finish = 0;
+	farm->finished_room_reading = 0;
+	farm->read_rooms_list = NULL;
+	ft_lstpushback(&farm->read_rooms_list, ft_lstnew((void*)0, 0));
+	ft_lstpushback(&farm->read_rooms_list, ft_lstnew((void*)0, 0));
+	return (farm);
 }
 
 int		main(int ac, char **av)
@@ -79,15 +157,7 @@ int		main(int ac, char **av)
 
 	if (ac != 1)
 		argnum_error();
-	if (!(farm = (t_antfarm*)malloc(sizeof(t_antfarm))))
-		mall_error();
-	farm->num_of_ants = -1;
-	farm->is_next_start = 0;
-	farm->is_next_finish = 0;
-	farm->finished_room_reading = 0;
-	farm->read_rooms_list = NULL;
-	ft_lstpushback(&farm->read_rooms_list, ft_lstnew((void*)0, 0));
-	ft_lstpushback(&farm->read_rooms_list, ft_lstnew((void*)0, 0));
+	farm = init_farm();
 	readlist = NULL;
 	while ((get_next_line(0, &line) > 0))
 	{

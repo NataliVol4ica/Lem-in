@@ -31,6 +31,7 @@
 
 t_read_arr	*read_lines(int fd);
 void		free_read_lines(t_read_arr *arr);
+void		free_word_arr(char **words);
 
 /*
 ** CALC FUNCS
@@ -155,6 +156,7 @@ char		*ft_strstr(const char *big, const char *small);
 char		*ft_strsub(char const *s, unsigned int start, size_t len);
 char		*ft_strtrim(char const *s);
 char		*ft_strupper(char *str);
+_Bool		is_integer(char *str);
 
 /*
 ** LONG MUL TOOLS

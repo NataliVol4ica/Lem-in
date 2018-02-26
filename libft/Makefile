@@ -93,7 +93,8 @@ STRFUNCS =	ft_strlen \
 			ft_strdupab \
 			ft_strrev \
 			ft_strupper \
-			ft_rmdupsymb
+			ft_rmdupsymb \
+			is_integer
 STRFDIR = ./strfuncs
 DSTRFUNCS = $(patsubst %, $(STRFDIR)/%, $(STRFUNCS))
 LISTFUNCS = ft_find_del \
