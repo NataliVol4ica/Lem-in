@@ -44,7 +44,7 @@ int		find_link_index(t_antfarm *farm, char *name)
 	{
 		if (!temp->content)
 			return (-1);
-		troom = (t_room*)temp->content;
+		troom = *(t_room**)temp->content;
 		if (strcmp(troom->name, name) == 0)
 			return (troom->index);
 		temp = temp->next;
@@ -80,7 +80,7 @@ int		parse_link(t_antfarm *farm, char *str)
 		free_word_arr(split_link);
 		return (diff == 0 ? 1 : 0);
 	}
-	ft_lstpushback(&farm->link_list, ft_lstnew((void*)link, sizeof(link)));
+	ft_lstpushback(&farm->link_list, ft_lstnew((void*)&link, sizeof(t_link*)));
 	return (1);
 }
 
@@ -117,6 +117,25 @@ int		parse_line(char *line, t_antfarm *farm)
 	return (1);
 }
 
+typedef struct	s_test
+{
+	char	*str;
+	int		number;
+}				t_test;
+
+void	print_read_list(t_list *readlist)
+{
+	t_list	*temp;
+
+	temp = readlist;
+	while (readlist)
+	{
+		ft_printf("%s\n", *(char**)readlist->content);
+		readlist = readlist->next;
+	}
+	ft_lstdel(&temp, NULL);
+}
+
 int		main(int ac, char **av)
 {
 	char		*line;
@@ -137,13 +156,11 @@ int		main(int ac, char **av)
 			free(line);
 			break;
 		}
-		ft_lstpushback(&readlist, ft_lstnew((void*)line, ft_strlen(line)));
-		free(line);
+		ft_lstpushback(&readlist, ft_lstnew((void*)&line, sizeof(char*)));
 	}
 	//convert read data to struct final mid-form
 	//check if the data is enough
-	//print the read farm list
-	//free read farm list
+	print_read_list(readlist);	
 	//run algo
 	//print algo result
 	return (0);

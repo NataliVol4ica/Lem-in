@@ -29,7 +29,7 @@ _Bool	is_room_unique(t_antfarm *farm, t_room *room)
 			temp = temp->next;
 			continue ;
 		}
-		troom = (t_room*)temp->content;
+		troom = *(t_room**)temp->content;
 		if (strcmp(troom->name, room->name) == 0)
 			return (0);
 		if (room->x_coord == troom->x_coord && room->y_coord == troom->y_coord)
@@ -45,7 +45,7 @@ void	add_start_room(t_antfarm *farm, t_room *new_room)
 
 	farm->is_next_start = 0;
 	new_room->index = 0;
-	if (!(newl = ft_lstnew((void*)new_room, sizeof(t_list))))
+	if (!(newl = ft_lstnew((void*)&new_room, sizeof(t_list*))))
 		mall_error();
 	newl->next = farm->read_rooms_list->next;
 	ft_lstdelone(&farm->read_rooms_list, NULL);
@@ -58,7 +58,7 @@ void	add_finish_room(t_antfarm *farm, t_room *new_room)
 
 	farm->is_next_finish = 0;
 	new_room->index = 1;
-	if (!(newl = ft_lstnew((void*)new_room, sizeof(t_list))))
+	if (!(newl = ft_lstnew((void*)&new_room, sizeof(t_list*))))
 		mall_error();
 	newl->next = farm->read_rooms_list->next->next;
 	ft_lstdelone(&farm->read_rooms_list->next, NULL);
@@ -70,7 +70,7 @@ void	add_casual_room(t_antfarm *farm, t_room *new_room)
 	t_list	*newl;
 
 	new_room->index = farm->num_of_rooms++;
-	if (!(newl = ft_lstnew((void*)new_room, sizeof(t_list))))
+	if (!(newl = ft_lstnew((void*)&new_room, sizeof(t_list*))))
 		mall_error();
 	ft_lstpushback(&farm->read_rooms_list, newl);
 }
@@ -90,7 +90,6 @@ int		parse_room(t_antfarm *farm, char **split_arr)
 	new_room->y_coord = ft_atoi(split_arr[2]);
 	if (!is_room_unique(farm, new_room))
 	{
-		free_word_arr(split_arr);
 		free_room(new_room);
 		return (0);
 	}
