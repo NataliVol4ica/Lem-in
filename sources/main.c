@@ -131,6 +131,7 @@ void	print_read_list(t_list *readlist)
 	while (readlist)
 	{
 		ft_printf("%s\n", *(char**)readlist->content);
+		free(*(char**)readlist->content);
 		readlist = readlist->next;
 	}
 	ft_lstdel(&temp, NULL);
@@ -163,5 +164,6 @@ int		main(int ac, char **av)
 	print_read_list(readlist);	
 	//run algo
 	//print algo result
+	system("leaks lem-in");
 	return (0);
 }
