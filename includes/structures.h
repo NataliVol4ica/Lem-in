@@ -44,7 +44,7 @@ typedef struct	s_antfarn
 	t_graph	*rooms;
 
 	t_list	*read_rooms_list;
-	t_list	*link_to_next_room;
+	t_list	*link_list;
 	t_graph	*init_rooms;
 	_Bool	is_next_start;
 	_Bool	is_next_finish;

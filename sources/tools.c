@@ -12,14 +12,27 @@
 
 #include <stdlib.h>
 #include "lemin.h"
+#include "libft.h"
 
-void	skip_ws(char *line, size_t *i)
+t_antfarm	*init_farm(void)
 {
-	while (line[*i] && (line[*i] == ' ' || line[*i] == '\t'))
-		*i = *i + 1;
+	t_antfarm	*farm;
+
+	if (!(farm = (t_antfarm*)malloc(sizeof(t_antfarm))))
+		mall_error();	
+	farm->read_rooms_list = NULL;
+	farm->link_list = NULL;
+	farm->is_next_start = 0;
+	farm->is_next_finish = 0;
+	farm->finished_room_reading = 0;
+	farm->read_rooms_list = NULL;
+	ft_lstpushback(&farm->read_rooms_list, ft_lstnew((void*)0, 0));
+	ft_lstpushback(&farm->read_rooms_list, ft_lstnew((void*)0, 0));
+	farm->num_of_rooms = 2;
+	return (farm);
 }
 
-void	free_room(t_room *room)
+void		free_room(t_room *room)
 {
 	free(room->name);
 	free(room);

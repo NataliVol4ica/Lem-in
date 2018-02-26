@@ -19,22 +19,21 @@
 ** ROOM PARSING
 */
 
-int		parse_room(t_antfarm *farm, char **split_arr);
+int			parse_room(t_antfarm *farm, char **split_arr);
 
 /*
 ** TOOLS
 */
 
-
-void	skip_ws(char *line, size_t *i);
-void	free_room(t_room *room);
+t_antfarm	*init_farm(void);
+void		free_room(t_room *room);
 
 /*
 ** ERRORS
 */
 
-void	argnum_error(void);
-void	mall_error(void);
-void	invalid_farm(void);
+void		argnum_error(void);
+void		mall_error(void);
+void		invalid_farm(void);
 
 #endif
