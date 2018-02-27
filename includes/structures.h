@@ -39,13 +39,13 @@ typedef struct	s_graph
 typedef struct	s_antfarn
 {
 	size_t	num_of_ants;
-
 	size_t	num_of_rooms;
-	t_graph	*rooms;
+	t_room	**rooms;
+	t_graph	*farm;
+	t_graph	*init_rooms;
 
 	t_list	*read_rooms_list;
 	t_list	*link_list;
-	t_graph	*init_rooms;
 	_Bool	is_next_start;
 	_Bool	is_next_finish;
 	_Bool	finished_room_reading;
