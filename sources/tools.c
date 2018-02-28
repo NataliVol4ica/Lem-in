@@ -29,6 +29,10 @@ t_antfarm	*init_farm(void)
 	ft_lstpushback(&farm->read_rooms_list, ft_lstnew((void*)0, 0));
 	ft_lstpushback(&farm->read_rooms_list, ft_lstnew((void*)0, 0));
 	farm->num_of_rooms = 2;
+	if (!(farm->init_rooms = (t_graph*)malloc(sizeof(t_graph))))
+		mall_error();
+	if (!(farm->rooms = (t_graph*)malloc(sizeof(t_graph))))
+		mall_error();
 	return (farm);
 }
 
@@ -36,4 +40,18 @@ void		free_room(t_room *room)
 {
 	free(room->name);
 	free(room);
+}
+
+void	print_read_list(t_list *readlist)
+{
+	t_list	*temp;
+
+	temp = readlist;
+	while (readlist)
+	{
+		ft_printf("%s\n", *(char**)readlist->content);
+		free(*(char**)readlist->content);
+		readlist = readlist->next;
+	}
+	ft_lstdel(&temp, NULL);
 }

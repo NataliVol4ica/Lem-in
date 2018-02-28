@@ -16,6 +16,7 @@
 # include "structures.h"
 
 void		convert_read_data(t_antfarm *farm);
+void		cut_graph(t_antfarm *farm);
 
 /*
 ** INPUT VALIDATION
@@ -32,6 +33,7 @@ int			parse_link(t_antfarm *farm, char *str);
 
 t_antfarm	*init_farm(void);
 void		free_room(t_room *room);
+void		print_read_list(t_list *readlist);
 
 /*
 ** ERRORS

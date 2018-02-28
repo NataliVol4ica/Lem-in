@@ -24,18 +24,16 @@ void	convert_read_data(t_antfarm *farm)
 
 	if (!farm->read_rooms_list->content || !farm->read_rooms_list->next->content)
 		invalid_farm();
-	if (!(farm->rooms = (t_room**)malloc(sizeof(t_room*) * farm->num_of_rooms)))
+	if (!(farm->room_arr = (t_room**)malloc(sizeof(t_room*) * farm->num_of_rooms)))
 		mall_error();
 	i = 0;
 	while (farm->read_rooms_list)
 	{
-		farm->rooms[i++] = *(t_room**)farm->read_rooms_list->content;
+		farm->room_arr[i++] = *(t_room**)farm->read_rooms_list->content;
 		temp = farm->read_rooms_list->next;
 		ft_lstdelone(&farm->read_rooms_list, NULL);
 		farm->read_rooms_list = temp;
 	}
-	if (!(farm->init_rooms = (t_graph*)malloc(sizeof(t_graph))))
-		mall_error();
 	farm->init_rooms->size = farm->num_of_rooms;
 	if (!(farm->init_rooms->vertexes = (_Bool**)malloc(sizeof(_Bool*) * farm->num_of_rooms)))
 		mall_error();

@@ -40,16 +40,19 @@ typedef struct	s_antfarn
 {
 	size_t	num_of_ants;
 	size_t	num_of_rooms;
-	t_room	**rooms;
-	t_graph	*farm;
-	t_graph	*init_rooms;
-	_Bool	*is_new_graph_vertex;
+	t_room	**room_arr;
+	t_graph	*rooms;
 
-	_Bool	*is_depth_chain_vertex;
+	int		*old_to_new;
+	int		*new_to_old;
+
+	_Bool	*is_wd_chain_vertex;
 	_Bool	*is_vertex_visited;
-	int		*depth_search_arr;
+	int		*wd_search_arr;
 	int		depth_level;
 
+	t_graph	*init_rooms;
+	_Bool	*is_new_graph_vertex;
 	t_list	*read_rooms_list;
 	t_list	*link_list;
 	_Bool	is_next_start;
