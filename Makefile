@@ -12,6 +12,7 @@ FILENAMES =	main \
 			parse_comment \
 			parse_room \
 			parse_link \
+			read_to_graph \
 			tools
 
 CFILES = $(patsubst %, $(SRCDIR)/%.c, $(FILENAMES))

@@ -43,6 +43,12 @@ typedef struct	s_antfarn
 	t_room	**rooms;
 	t_graph	*farm;
 	t_graph	*init_rooms;
+	_Bool	*is_new_graph_vertex;
+
+	_Bool	*is_depth_chain_vertex;
+	_Bool	*is_vertex_visited;
+	int		*depth_search_arr;
+	int		depth_level;
 
 	t_list	*read_rooms_list;
 	t_list	*link_list;

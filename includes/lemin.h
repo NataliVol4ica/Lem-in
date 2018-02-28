@@ -15,6 +15,8 @@
 
 # include "structures.h"
 
+void		convert_read_data(t_antfarm *farm);
+
 /*
 ** INPUT VALIDATION
 */

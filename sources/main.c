@@ -29,49 +29,68 @@ void	print_read_list(t_list *readlist)
 	ft_lstdel(&temp, NULL);
 }
 
-void	convert_read_data(t_antfarm *farm)
+void	depth_search(t_antfarm *farm)
 {
-	t_list	*temp;
-	t_link	*link;
+	size_t	prev_vertex;
 	size_t	i;
 	size_t	j;
 
-	if (!farm->read_rooms_list->content || !farm->read_rooms_list->next->content)
-		invalid_farm();
-	if (!(farm->rooms = (t_room**)malloc(sizeof(t_room*) * farm->num_of_rooms)))
-		mall_error();
-	i = 0;
-	while (farm->read_rooms_list)
+	prev_vertex = farm->depth_search_arr[farm->depth_level - 1];
+	i = -1;
+	while (++i < farm->num_of_rooms)
 	{
-		farm->rooms[i++] = *(t_room**)farm->read_rooms_list->content;
-		temp = farm->read_rooms_list->next;
-		ft_lstdelone(&farm->read_rooms_list, NULL);
-		farm->read_rooms_list = temp;
+		if (i == prev_vertex || farm->is_vertex_visited[i] || farm->is_depth_chain_vertex[i])
+			continue;
+		if (farm->init_rooms->vertexes[prev_vertex][i])
+		{
+			farm->depth_search_arr[farm->depth_level++] = i;
+			if (i == 1)
+			{
+				j = -1;
+				while (++j < farm->depth_level)
+					farm->is_new_graph_vertex[farm->depth_search_arr[j]] = 1;
+				farm->is_vertex_visited[0] = 1;
+				farm->depth_level--;
+				return;
+			}
+			depth_search(farm);
+			farm->depth_level--;
+		}
 	}
-	if (!(farm->init_rooms = (t_graph*)malloc(sizeof(t_graph))))
+	farm->is_vertex_visited[prev_vertex] = 1;
+}
+
+void	cut_graph(t_antfarm *farm)
+{
+	size_t i;
+
+	if (!(farm->is_new_graph_vertex = (_Bool*)malloc(sizeof(_Bool) * farm->num_of_rooms)))
 		mall_error();
-	farm->init_rooms->size = farm->num_of_rooms;
-	if (!(farm->init_rooms->vertexes = (_Bool**)malloc(sizeof(_Bool*) * farm->num_of_rooms)))
+
+	if (!(farm->is_depth_chain_vertex = (_Bool*)malloc(sizeof(_Bool) * farm->num_of_rooms)))
+		mall_error();
+	if (!(farm->is_vertex_visited = (_Bool*)malloc(sizeof(_Bool) * farm->num_of_rooms)))
+		mall_error();
+	if (!(farm->depth_search_arr = (int*)malloc(sizeof(int) * farm->num_of_rooms)))
 		mall_error();
 	i = -1;
 	while (++i < farm->num_of_rooms)
 	{
-		if (!(farm->init_rooms->vertexes[i] = (_Bool*)malloc(sizeof(_Bool) * farm->num_of_rooms)))
-			mall_error();
-		j = -1;
-		while (++j < farm->num_of_rooms)
-			farm->init_rooms->vertexes[i][j] = 0;
+		farm->is_new_graph_vertex[i] = 0;
+		farm->is_depth_chain_vertex[i] = 0;
+		farm->is_vertex_visited[i] = 0;
 	}
-	while (farm->link_list)
-	{
-		temp = farm->link_list->next;
-		link = *(t_link**)farm->link_list->content;
-		farm->init_rooms->vertexes[link->vertex1][link->vertex2] = 1;
-		farm->init_rooms->vertexes[link->vertex2][link->vertex1] = 1;
-		free(link);
-		ft_lstdelone(&farm->link_list, NULL);
-		farm->link_list = temp;
-	}
+	farm->is_depth_chain_vertex[0] = 1;
+	farm->depth_level = 1;
+	farm->depth_search_arr[0] = 0;
+	depth_search(farm);
+	//free depth search list ?
+	
+	//check num of new vertexes. if zero print error
+	//get a data of ok vertexes
+	//create an arr that converts each new vertex index to an old one
+	//create new graph
+	//free old graph
 }
 
 int		main(int ac, char **av)
@@ -98,10 +117,10 @@ int		main(int ac, char **av)
 		ft_lstpushback(&readlist, ft_lstnew((void*)&line, sizeof(char*)));
 	}
 	convert_read_data(farm);
-	//check if the data is enough - if there is a path between s and f
+	cut_graph(farm);
 	print_read_list(readlist);	
 	//run algo
 	//print algo result
-	system("leaks lem-in");
+	//system("leaks lem-in");
 	return (0);
 }
