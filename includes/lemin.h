@@ -16,7 +16,7 @@
 # include "structures.h"
 
 void		convert_read_data(t_antfarm *farm);
-void		cut_graph(t_antfarm *farm);
+void		optimize_graph(t_antfarm *farm);
 
 /*
 ** INPUT VALIDATION

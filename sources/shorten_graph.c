@@ -30,16 +30,19 @@ static void	cutter_depth_search(t_antfarm *farm)
 		else if (farm->init_rooms->vertexes[prev_vertex][i])
 		{
 			farm->wd_search_arr[farm->depth_level++] = i;
+			farm->is_wd_chain_vertex[i] = 1;
 			if (i == 1 && (j = -1))
 			{
 				while (++j < farm->depth_level)
 					farm->is_new_graph_vertex[farm->wd_search_arr[j]] = 1;
 				farm->is_vertex_visited[0] = 1;
 				farm->depth_level--;
+				farm->is_wd_chain_vertex[i] = 0;
 				return;
 			}
 			cutter_depth_search(farm);
 			farm->depth_level--;
+			farm->is_wd_chain_vertex[i] = 0;
 		}
 	farm->is_vertex_visited[prev_vertex] = 1;
 }
@@ -73,7 +76,7 @@ static void	algo_mallocs(t_antfarm *farm)
 	}
 }
 
-void		cut_graph(t_antfarm *farm)
+void		optimize_graph(t_antfarm *farm)
 {
 	size_t	i;
 	size_t	j;
@@ -83,7 +86,6 @@ void		cut_graph(t_antfarm *farm)
 	farm->depth_level = 1;
 	farm->wd_search_arr[0] = 0;
 	farm->rooms->size = 0;
-	ft_printf("no segfault until depth\n");
 	cutter_depth_search(farm);
 	i = -1;
 	while (++i < farm->num_of_rooms)
@@ -92,7 +94,6 @@ void		cut_graph(t_antfarm *farm)
 			farm->old_to_new[i] = farm->rooms->size;
 			farm->new_to_old[farm->rooms->size++] = i;
 		}
-	ft_printf("counted new size: %d\n", farm->rooms->size);
 	if (farm->rooms->size == 0)
 		invalid_farm();
 	if (!(farm->rooms->vertexes = (_Bool**)malloc(sizeof(_Bool*) * farm->rooms->size)))

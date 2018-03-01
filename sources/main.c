@@ -39,7 +39,7 @@ int		main(int ac, char **av)
 		ft_lstpushback(&readlist, ft_lstnew((void*)&line, sizeof(char*)));
 	}
 	convert_read_data(farm);
-	cut_graph(farm);
+	optimize_graph(farm);
 	print_read_list(readlist);	
 	//run algo
 	//print algo result

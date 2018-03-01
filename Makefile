@@ -72,3 +72,6 @@ fclean: clean
 	@make fclean -C ./libft
 
 re: fclean all
+
+test:
+	@cat input | ./lem-in
