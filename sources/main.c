@@ -34,13 +34,13 @@ int		main(int ac, char **av)
 		if (!parse_line(line, farm))
 		{
 			free(line);
-			break;
+			break ;
 		}
 		ft_lstpushback(&readlist, ft_lstnew((void*)&line, sizeof(char*)));
 	}
 	convert_read_data(farm);
 	optimize_graph(farm);
-	print_read_list(readlist);	
+	print_read_list(readlist);
 	//run algo
 	//print algo result
 	//system("leaks lem-in");

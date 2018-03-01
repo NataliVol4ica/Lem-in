@@ -42,7 +42,7 @@ void		free_room(t_room *room)
 	free(room);
 }
 
-void	print_read_list(t_list *readlist)
+void		print_read_list(t_list *readlist)
 {
 	t_list	*temp;
 
@@ -53,5 +53,6 @@ void	print_read_list(t_list *readlist)
 		free(*(char**)readlist->content);
 		readlist = readlist->next;
 	}
+	ft_printf("\n");
 	ft_lstdel(&temp, NULL);
 }
