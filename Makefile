@@ -8,6 +8,7 @@ HFILES = $(patsubst %, $(INCDIR)/%.h, $(HEADERS))
 
 FILENAMES =	main \
 			errors \
+			mallocs \
 			parse_line \
 			parse_comment \
 			parse_room \

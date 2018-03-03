@@ -54,39 +54,9 @@ static void	cutter_depth_search(t_antfarm *farm)
 	farm->is_vertex_visited[prev_vertex] = 1;
 }
 
-static void	algo_mallocs(t_antfarm *farm)
-{
-	size_t	i;
-
-	if (!(farm->is_new_graph_vertex =
-		(_Bool*)malloc(sizeof(_Bool) * farm->num_of_rooms)))
-		mall_error();
-	if (!(farm->is_wd_chain_vertex =
-		(_Bool*)malloc(sizeof(_Bool) * farm->num_of_rooms)))
-		mall_error();
-	if (!(farm->is_vertex_visited =
-		(_Bool*)malloc(sizeof(_Bool) * farm->num_of_rooms)))
-		mall_error();
-	if (!(farm->wd_search_arr =
-		(int*)malloc(sizeof(int) * farm->num_of_rooms)))
-		mall_error();
-	if (!(farm->old_to_new = (int*)malloc(sizeof(int) * farm->num_of_rooms)))
-		mall_error();
-	if (!(farm->new_to_old = (int*)malloc(sizeof(int) * farm->num_of_rooms)))
-		mall_error();
-	i = -1;
-	while (++i < farm->num_of_rooms)
-	{
-		farm->is_new_graph_vertex[i] = 0;
-		farm->is_wd_chain_vertex[i] = 0;
-		farm->is_vertex_visited[i] = 0;
-	}
-}
-
 static void	gen_new_graph(t_antfarm *farm)
 {
 	size_t	i;
-	size_t	j;
 
 	farm->is_wd_chain_vertex[0] = 1;
 	farm->depth_level = 1;
@@ -102,14 +72,7 @@ static void	gen_new_graph(t_antfarm *farm)
 		}
 	if (farm->rooms->size == 0)
 		invalid_farm();
-	if (!(farm->rooms->vertexes = (_Bool**)malloc(sizeof(_Bool*) *
-									farm->rooms->size)))
-		mall_error();
-	i = -1;
-	while (++i < farm->rooms->size)
-		if (!(farm->rooms->vertexes[i] = (_Bool*)malloc(sizeof(_Bool) *
-										farm->rooms->size)))
-			mall_error();
+	new_graph_mallocs(farm);
 }
 
 void		optimize_graph(t_antfarm *farm)
@@ -117,7 +80,7 @@ void		optimize_graph(t_antfarm *farm)
 	size_t	i;
 	size_t	j;
 
-	algo_mallocs(farm);
+	optimization_mallocs(farm);
 	gen_new_graph(farm);
 	i = -1;
 	while (++i < farm->num_of_rooms)

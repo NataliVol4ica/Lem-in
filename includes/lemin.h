@@ -36,6 +36,14 @@ void		free_room(t_room *room);
 void		print_read_list(t_list *readlist);
 
 /*
+** MALLOCS
+*/
+
+void		optimization_mallocs(t_antfarm *farm);
+void		new_graph_mallocs(t_antfarm *farm);
+void		algo_mallocs(t_antfarm *farm);
+void		algo_mallocs2(t_antfarm *farm);
+/*
 ** ERRORS
 */
 
