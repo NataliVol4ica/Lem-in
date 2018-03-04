@@ -74,12 +74,12 @@ void	algo_mallocs(t_antfarm *farm)
 	i = -1;
 	while (++i < farm->len_of_shortest_path + farm->num_of_ants && (j = -1))
 	{
-		if (!(farm->steps[i] = (int*)malloc(sizeof(int) * farm->num_of_ants)))
+		if (!(farm->steps[i] = (int*)malloc(sizeof(int) * farm->num_of_rooms)))
 			mall_error();
 		if (!(farm->busy_vertexes[i] = (_Bool*)malloc(sizeof(_Bool) *
-										farm->num_of_ants)))
+										farm->num_of_rooms)))
 			mall_error();
-		while (++j < farm->num_of_ants)
+		while (++j < farm->num_of_rooms)
 		{
 			farm->steps[i][j] = -1;
 			farm->busy_vertexes[i][j] = 0;
