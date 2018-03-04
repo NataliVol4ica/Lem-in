@@ -32,7 +32,7 @@ void	width_numeration(t_antfarm *farm)
 	is_used[1] = 1;
 	farm->width_level[1] = windex;
 	farm->max_ant_per_step = farm->rooms->size;
-	farm->len_of_shortest_path = farm->rooms->size;
+	farm->len_of_shortest_path = -1;
 	num_of_used = farm->rooms->size - 1;
 	while (num_of_used)
 	{
@@ -53,7 +53,7 @@ void	width_numeration(t_antfarm *farm)
 						min++;
 					}
 			}
-		if (min < farm->max_ant_per_step)
+		if (min < farm->max_ant_per_step && farm->len_of_shortest_path < 0)
 			farm->max_ant_per_step = min;
 		windex++;
 	}
@@ -73,12 +73,12 @@ void	fill_loadness(t_antfarm *farm, _Bool *busy_vertexes)
 	{
 		i = -1;
 		while (++i < farm->num_of_rooms)
-			if (farm->width_level == curwidth && !farm->busy_vertexes[i])
+			if (farm->width_level[i] == curwidth && !farm->busy_vertexes[i])
 			{
 				farm->loadness[i] = 0;
 				j = -1;
 				while(++j < farm->num_of_rooms)
-					if (!busy_vertexes[j] && farm->width_level == curwidth + 1 &&
+					if (!busy_vertexes[j] && farm->width_level[j] == curwidth + 1 &&
 											farm->rooms->vertexes[i][j])
 						farm->loadness[i] += farm->loadness[j];  
 			}
@@ -88,14 +88,26 @@ void	fill_loadness(t_antfarm *farm, _Bool *busy_vertexes)
 
 void	pave_da_wei(t_antfarm *farm, size_t step, size_t antsleft)
 {
-	//for i from 0 to path len - 1
-	//farm->steps[step + i][antnum - antsleft] = farm->path->vertexes[i]
-	//farm->busy_vertexes[step + i][farm->path->vertexes[i] = 1;
+	size_t	i;
+
+	i = -1;
+	while (++i < farm->path->len)
+	{
+		farm->steps[step + i][farm->num_of_ants - antsleft] = farm->path->vertexes[i];
+		farm->busy_vertexes[step + i][farm->path->vertexes[i]] = 1;
+	}
 }
 
-int		find_da_wei(t_antfarm *farm, size_t curstep/*hz*/, _Bool search_optimal)
+int		find_da_wei(t_antfarm *farm, size_t curstep, size_t antsleft, _Bool search_optimal)
 {
-	static int sleep = 0;
+	static int	sleep = 0;
+	size_t		i;
+	size_t		j;
+	size_t		minwidthlevel;
+	size_t		index;
+	size_t		ret;
+	size_t		curwidth;
+	int			min_load;
 
 	if (sleep > 0)
 	{
@@ -103,18 +115,66 @@ int		find_da_wei(t_antfarm *farm, size_t curstep/*hz*/, _Bool search_optimal)
 		return (0);
 	}
 	fill_loadness(farm, farm->busy_vertexes[curstep]);
+	minwidthlevel = farm->max_width;
 	//find a connected to start vertex
 	//that is not busy
 	//and has lowest width level. if equal - lowest loadness
-	//if diff (this + 1) with shortest is > num of ants or search_optimal
+	i = -1;
+	while (++i < farm->rooms->size)
+		if (farm->rooms->vertexes[0][i] && !farm->busy_vertexes[curstep][i])
+			if (minwidthlevel > farm->width_level[i] ||
+				(minwidthlevel == farm->width_level[i] && farm->loadness[index] > farm->loadness[i]))
+			{
+				minwidthlevel = farm->width_level[i];
+				index = i;
+			}
+	if (!search_optimal) //for recursion check return len only
+		return (minwidthlevel + 1);
+	//if diff (this + 1) with shortest is > num of ants and search_optimal
 	//for i from 1 to diff call find the way with curstep + i if step is less than steps len
 	//cmp thisw + 1 with return.
 	//if found path it better then sleep = i - 1 and return 0
+	i = 1;
+	if (minwidthlevel - farm->len_of_shortest_path > antsleft && search_optimal)
+		while (i < minwidthlevel + 1 - farm->len_of_shortest_path - antsleft &&
+			curstep + i + 1 < farm->len_of_shortest_path + farm->num_of_ants)
+		{
+			ret = find_da_wei(farm, curstep + i, antsleft, 0);
+			if (minwidthlevel - ret - i > antsleft)
+			{
+				sleep = i - 1;
+				return (0);
+			}
+			i++;
+		}
 	//find her neighbours of width_level - 1 with min loadness and add to the way
 	//and push it all back to path
 	// ... until width level is 0
 	//return way len
-	return (1);
+	farm->path->len = 0;
+	curwidth = minwidthlevel;
+	farm->path->vertexes[farm->path->len++] = index;
+	while (curwidth > 0)
+	{
+		min_load = -1;
+		i = -1;
+		while (++i < farm->num_of_rooms)
+			if (farm->rooms->vertexes[farm->path->vertexes[farm->path->len - 1]][i] &&
+				!farm->busy_vertexes[curstep + farm->path->len][i] &&
+				farm->width_level[i] == curwidth - 1) //if next level of width is not busy and has connection
+			{//if not in a bad mood
+			//this should be fixed for loadness for proper level but not current
+				if (min_load < 0 || min_load > farm->loadness[i])
+				{
+					min_load = farm->loadness[i];
+					index = i;
+				}
+			}
+		farm->path->vertexes[farm->path->len++] = index;
+		curwidth--;
+	}
+	farm->path->vertexes[farm->path->len++] = 0;
+	return (farm->path->len);
 }
 
 void	algo(t_antfarm *farm)
@@ -131,7 +191,7 @@ void	algo(t_antfarm *farm)
 	{
 		i = -1;
 		while (++i < farm->max_ant_per_step)
-			if (!find_da_wei(farm, curstep, 1))
+			if (!find_da_wei(farm, curstep, antsleft, 1))
 				break;
 			else
 			{
