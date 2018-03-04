@@ -274,8 +274,8 @@ int		main(int ac, char **av)
 	if (!(get_next_line(0, &line) > 0) || !is_integer(line) ||
 		(farm->num_of_ants = ft_atoi(line)) <= 0)
 		invalid_farm();
-	free(line);
 	readlist = NULL;
+	ft_lstpushback(&readlist, ft_lstnew((void*)&line, sizeof(char*)));
 	while ((get_next_line(0, &line) > 0))
 	{
 		if (!parse_line(line, farm))
