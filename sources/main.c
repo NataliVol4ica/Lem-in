@@ -223,7 +223,7 @@ void	algo(t_antfarm *farm)
 	while (antsleft > 0)
 	{
 		i = -1;
-		while (++i < farm->max_ant_per_step)
+		while (++i < farm->max_ant_per_step && antsleft)
 			if (!find_da_wei(farm, curstep, antsleft, 1))
 			{
 				//ft_printf("der is no wae :'(\n");
@@ -246,7 +246,7 @@ void	print_ans(t_antfarm *farm)
 	_Bool	is_first;
 
 	i = -1;
-	while (++i < farm->total_steps)
+	while (++i < farm->total_steps - 1)
 	{
 		j = -1;
 		is_first = 1;
@@ -291,7 +291,6 @@ int		main(int ac, char **av)
 	width_numeration(farm);
 	algo(farm);
 	print_ans(farm);
-	//print algo result
 	//system("leaks lem-in");
 	return (0);
 }
