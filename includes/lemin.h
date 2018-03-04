@@ -34,6 +34,7 @@ int			parse_link(t_antfarm *farm, char *str);
 t_antfarm	*init_farm(void);
 void		free_room(t_room *room);
 void		print_read_list(t_list *readlist);
+int			max(int a, int b);
 
 /*
 ** MALLOCS

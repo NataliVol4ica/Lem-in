@@ -176,15 +176,18 @@ int		find_da_wei(t_antfarm *farm, size_t curstep, size_t antsleft, _Bool search_
 	//if found path it better then sleep = i - 1 and return 0
 	i = 1;
 	diff = (int)minwidthlevel - (int)farm->len_of_shortest_path;
+	diff -= (int)antsleft;
 	//ft_printf("diff %d\n", diff);
-	if (diff > (int)antsleft && search_optimal)
-		while (i < minwidthlevel + 1 - farm->len_of_shortest_path - antsleft &&
+	if (diff >= 0 && search_optimal)
+		while (i < diff + 2 &&
 			curstep + i + 1 < farm->len_of_shortest_path + farm->num_of_ants)
 		{
 			ret = find_da_wei(farm, curstep + i, antsleft, 0);
-			if (minwidthlevel - ret - i > antsleft)
+			//ft_printf("ret %d\n", ret);
+			if (minwidthlevel + 1 - ret - i >= antsleft)
 			{
 				sleep = i - 1;
+				//ft_printf("sleep %d\n", sleep);
 				return (0);
 			}
 			i++;
@@ -247,7 +250,7 @@ void	algo(t_antfarm *farm)
 			}
 		curstep++;
 	}
-	farm->total_steps = curstep + farm->path->len - 1;
+	farm->total_steps = max(farm->total_steps, curstep + farm->path->len);
 }
 
 void	print_ans(t_antfarm *farm)
@@ -255,21 +258,25 @@ void	print_ans(t_antfarm *farm)
 	size_t	i;
 	size_t	j;
 	_Bool	is_first;
+	_Bool	printed;
 
 	i = -1;
-	while (++i < farm->total_steps - 1)
+	while (++i < farm->total_steps)
 	{
+		printed = 0;
 		j = -1;
 		is_first = 1;
 		while (++j < farm->num_of_ants)
 			if (farm->steps[i][j] > 0)
 			{
+				printed = 1;
 				if (!is_first)
 					ft_printf(" ");
 				ft_printf("L%d-%s", j + 1, farm->room_arr[farm->new_to_old[farm->steps[i][j]]]->name);
 				is_first = 0;
 			}
-		ft_printf("\n");
+		if (printed)
+			ft_printf("\n");
 	}
 }
 

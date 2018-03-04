@@ -56,3 +56,10 @@ void		print_read_list(t_list *readlist)
 	ft_printf("\n");
 	ft_lstdel(&temp, NULL);
 }
+
+int			max(int a, int b)
+{
+	if (a > b)
+		return (a);
+	return (b);
+}
