@@ -70,9 +70,8 @@ static int	find_da_wei(t_antfarm *farm, size_t curstep,
 		return (0);
 	fill_loadness(farm, farm->busy_vertexes[curstep]);
 	find_minwidth(farm, &d, curstep);
-	if (!search_optimal)
+	if ((i = 1) && !search_optimal)
 		return (d.minwidthlevel + 1);
-	i = 1;
 	d.diff = d.minwidthlevel - farm->len_of_shortest_path - antsleft;
 	if (d.diff >= 0 && search_optimal)
 		while (i < d.diff + 2 &&
@@ -114,4 +113,5 @@ void		algo(t_antfarm *farm)
 		curstep++;
 	}
 	farm->total_steps = max(farm->total_steps, curstep + farm->path->len);
+	print_ans(farm);
 }

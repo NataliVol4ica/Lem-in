@@ -66,10 +66,8 @@ int		main(int ac, char **av)
 		ft_lstpushback(&readlist, ft_lstnew((void*)&line, sizeof(char*)));
 	}
 	convert_read_data(farm);
-	optimize_graph(farm);
 	print_read_list(readlist);
 	width_numeration(farm);
 	algo(farm);
-	print_ans(farm);
 	return (0);
 }

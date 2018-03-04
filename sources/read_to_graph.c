@@ -69,4 +69,5 @@ void		convert_read_data(t_antfarm *farm)
 		mall_error();
 	link = NULL;
 	fuck_the_norm(farm, link);
+	optimize_graph(farm);
 }
