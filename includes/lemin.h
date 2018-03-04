@@ -15,8 +15,17 @@
 
 # include "structures.h"
 
+/*
+** ALGO
+*/
+
 void		convert_read_data(t_antfarm *farm);
 void		optimize_graph(t_antfarm *farm);
+void		width_numeration(t_antfarm *farm);
+void		algo(t_antfarm *farm);
+
+void		fill_loadness(t_antfarm *farm, _Bool *busy_vertexes);
+void		pave_da_wei(t_antfarm *farm, size_t step, size_t antsleft);
 
 /*
 ** INPUT VALIDATION
@@ -48,7 +57,7 @@ void		algo_mallocs2(t_antfarm *farm);
 ** ERRORS
 */
 
-void		argnum_error(void);
+void		argnum_error(int ac, char **av);
 void		mall_error(void);
 void		invalid_farm(void);
 

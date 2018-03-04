@@ -7,22 +7,25 @@ SRCDIR = ./sources
 HFILES = $(patsubst %, $(INCDIR)/%.h, $(HEADERS))
 
 FILENAMES =	main \
+			tools \
 			errors \
 			mallocs \
 			parse_line \
-			parse_comment \
-			parse_room \
 			parse_link \
+			parse_room \
+			parse_comment \
 			read_to_graph \
 			shorten_graph \
-			tools
+			width_filler \
+			algo \
+			algo2
 
 CFILES = $(patsubst %, $(SRCDIR)/%.c, $(FILENAMES))
 OFILES = $(patsubst %, $(ODIR)/%.o, $(FILENAMES))
 
 LIBDIR = ./libft
 LIBFT = $(LIBDIR)/libft.a
-FLAGS = #-Wall -Wextra -Werror -O3
+FLAGS = -Wall -Wextra -Werror
 LIBINCDIR = $(LIBDIR)/includes
 
 ODIR = ./obj

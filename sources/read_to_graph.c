@@ -67,5 +67,6 @@ void		convert_read_data(t_antfarm *farm)
 	if (!(farm->init_rooms->vertexes = (_Bool**)malloc(sizeof(_Bool*) *
 										farm->num_of_rooms)))
 		mall_error();
+	link = NULL;
 	fuck_the_norm(farm, link);
 }

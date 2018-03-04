@@ -76,4 +76,14 @@ typedef struct	s_antfarn
 	_Bool	finished_room_reading;
 }				t_antfarm;
 
+typedef struct	s_algo_data
+{
+	int			minwidthlevel;
+	size_t		index;
+	size_t		ret;
+	int			curwidth;
+	int			min_load;
+	int			diff;
+}				t_ad;
+
 #endif

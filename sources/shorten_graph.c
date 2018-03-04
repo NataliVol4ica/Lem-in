@@ -17,7 +17,7 @@
 
 static void	cutter_depth_search2(t_antfarm *farm)
 {
-	size_t j;
+	int j;
 
 	j = -1;
 	while (++j < farm->depth_level)

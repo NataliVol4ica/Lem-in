@@ -21,8 +21,11 @@ void	mall_error(void)
 	exit(1);
 }
 
-void	argnum_error(void)
+void	argnum_error(int ac, char **av)
 {
+	(void)av;
+	if (ac == 1)
+		return ;
 	ft_printf("Usage: ./lem-in\n");
 	exit(0);
 }
