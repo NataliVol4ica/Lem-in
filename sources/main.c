@@ -236,6 +236,30 @@ void	algo(t_antfarm *farm)
 			}
 		curstep++;
 	}
+	farm->total_steps = curstep + farm->path->len - 1;
+}
+
+void	print_ans(t_antfarm *farm)
+{
+	size_t	i;
+	size_t	j;
+	_Bool	is_first;
+
+	i = -1;
+	while (++i < farm->total_steps)
+	{
+		j = -1;
+		is_first = 1;
+		while (++j < farm->num_of_ants)
+			if (farm->steps[i][j] > 0)
+			{
+				if (!is_first)
+					ft_printf(" ");
+				ft_printf("L%d-%s", j + 1, farm->room_arr[farm->new_to_old[farm->steps[i][j]]]->name);
+				is_first = 0;
+			}
+		ft_printf("\n");
+	}
 }
 
 int		main(int ac, char **av)
@@ -266,6 +290,7 @@ int		main(int ac, char **av)
 	print_read_list(readlist);
 	width_numeration(farm);
 	algo(farm);
+	print_ans(farm);
 	//print algo result
 	//system("leaks lem-in");
 	return (0);

@@ -51,10 +51,11 @@ typedef struct	s_antfarn
 	int		*width_level;
 	int		*loadness;
 	size_t	max_width;
-	int	len_of_shortest_path;
+	int		len_of_shortest_path;
 	size_t	max_ant_per_step;
 	int		**steps;
 	_Bool	**busy_vertexes;
+	int		total_steps;
 
 	t_path	*path;
 
