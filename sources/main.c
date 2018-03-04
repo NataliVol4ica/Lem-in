@@ -45,6 +45,7 @@ void	width_numeration(t_antfarm *farm)
 				while (++j < farm->rooms->size)
 					if (!is_used[j] && farm->rooms->vertexes[i][j])
 					{
+						//ft_printf("[%d %d] %d\n", i, j, windex + 1);
 						farm->width_level[j] = windex + 1;
 						is_used[j] = 1;
 						if (j == 0)
@@ -56,9 +57,15 @@ void	width_numeration(t_antfarm *farm)
 		if (min < farm->max_ant_per_step && farm->len_of_shortest_path < 0)
 			farm->max_ant_per_step = min;
 		windex++;
+		//ft_printf("windex %d\n", windex);
 	}
+	windex++;
 	farm->max_width = windex;
 	farm->width_level[0] = windex;
+	//ft_printf(">>width\n");
+	//for (int i = 0; i < farm->rooms->size; i++)
+	//	ft_printf("%d ", farm->width_level[i]);
+	//ft_printf("\n");
 }
 
 void	fill_loadness(t_antfarm *farm, _Bool *busy_vertexes)
@@ -68,23 +75,25 @@ void	fill_loadness(t_antfarm *farm, _Bool *busy_vertexes)
 	size_t	j;
 	
 	farm->loadness[0] = 1;
+	farm->loadness[1] = 0;
 	curwidth = farm->max_width - 1;
 	while (curwidth > 0)
 	{
 		//ft_printf("curwidth %d\n", curwidth);
 		i = -1;
-		while (++i < farm->num_of_rooms)
+		while (++i < farm->rooms->size)
 		{
 			//ft_printf("%d width level %d isbusy %d\n", i, farm->width_level[i], busy_vertexes[i]);
 			if (farm->width_level[i] == curwidth && !busy_vertexes[i])
 			{
-				//ft_printf("counting loadness for %d\n", i);
+				//ft_printf("counting loadness for %d ", i);
 				farm->loadness[i] = 0;
 				j = -1;
-				while(++j < farm->num_of_rooms)
-					if (!busy_vertexes[j] && farm->width_level[j] == curwidth + 1 &&
-											farm->rooms->vertexes[i][j])
-						farm->loadness[i] += farm->loadness[j];  
+				while(++j < farm->rooms->size)
+					if (!busy_vertexes[j] && farm->rooms->vertexes[i][j] &&
+						(farm->width_level[j] == curwidth + 1 || j == 0))
+						farm->loadness[i] += farm->loadness[j];
+				//ft_printf("%d\n", farm->loadness[i]);
 			}
 		}curwidth--;
 	}
@@ -94,13 +103,16 @@ void	pave_da_wei(t_antfarm *farm, size_t step, size_t antsleft)
 {
 	size_t	i;
 
+	//ft_printf("saving path len %d ", farm->path->len);
 	i = -1;
 	while (++i < farm->path->len)
 	{
+		//ft_printf("%s ", farm->room_arr[farm->new_to_old[farm->path->vertexes[i]]]->name);
 		farm->steps[step + i][farm->num_of_ants - antsleft] = farm->path->vertexes[i];
 		if (farm->path->vertexes[i] != 1)
 			farm->busy_vertexes[step + i][farm->path->vertexes[i]] = 1;
 	}
+	//ft_printf("\n");
 }
 
 void	print_busy(t_antfarm *farm)
@@ -111,7 +123,7 @@ void	print_busy(t_antfarm *farm)
 	i = -1;
 	while (++i < farm->len_of_shortest_path + farm->num_of_ants && (j = -1))
 	{
-		while (++j < farm->num_of_rooms)
+		while (++j < farm->rooms->size)
 			ft_printf(" %d", farm->busy_vertexes[i][j]);
 		ft_printf("\n");
 	}
@@ -136,16 +148,12 @@ int		find_da_wei(t_antfarm *farm, size_t curstep, size_t antsleft, _Bool search_
 	}
 	//ft_printf("looking for step %d ants left %d optimal %d\n", curstep, antsleft, search_optimal);
 	//print_busy(farm);
-	//ft_printf(" LOOK AT THIS! %d\n", farm->len_of_shortest_path + farm->num_of_ants);
-	/*i = -1;
-	while (++i < farm->len_of_shortest_path + farm->num_of_ants && (j = -1))
-	{
-		while (++j < farm->num_of_ants)
-		{ft_printf(" %d", farm->busy_vertexes[i][j]);
-		}
-		ft_printf("\n");
-	}*/
 	fill_loadness(farm, farm->busy_vertexes[curstep]);
+	/*ft_printf("loadness\n");
+	i = -1;
+	while (++i < farm->rooms->size)
+		ft_printf("%d ", farm->loadness[i]);
+	ft_printf("\n");*/
 	minwidthlevel = farm->max_width;
 	//find a connected to start vertex
 	//that is not busy
@@ -159,7 +167,7 @@ int		find_da_wei(t_antfarm *farm, size_t curstep, size_t antsleft, _Bool search_
 				minwidthlevel = farm->width_level[i];
 				index = i;
 			}
-	//ft_printf("best neighbour vertex is %d of width level %d and loadness %d\n, index, minwidthlevel, farm->loadness[index]);
+	//ft_printf("best neighbour vertex is %d of width level %d and loadness %d\n", index, minwidthlevel, farm->loadness[index]);
 	if (!search_optimal) //for recursion check return len only
 		return (minwidthlevel + 1);
 	//if diff (this + 1) with shortest is > num of ants and search_optimal
@@ -185,6 +193,7 @@ int		find_da_wei(t_antfarm *farm, size_t curstep, size_t antsleft, _Bool search_
 	//and push it all back to path
 	// ... until width level is 0
 	//return way len
+	//ft_printf("len ok\n");
 	farm->path->len = 0;
 	curwidth = minwidthlevel;
 	farm->path->vertexes[farm->path->len++] = index;
@@ -192,7 +201,7 @@ int		find_da_wei(t_antfarm *farm, size_t curstep, size_t antsleft, _Bool search_
 	{
 		min_load = -1;
 		i = -1;
-		while (++i < farm->num_of_rooms)
+		while (++i < farm->rooms->size)
 			if (farm->rooms->vertexes[farm->path->vertexes[farm->path->len - 1]][i] &&
 				!farm->busy_vertexes[curstep + farm->path->len][i] &&
 				farm->width_level[i] == curwidth - 1) //if next level of width is not busy and has connection
@@ -205,9 +214,9 @@ int		find_da_wei(t_antfarm *farm, size_t curstep, size_t antsleft, _Bool search_
 				}
 			}
 		farm->path->vertexes[farm->path->len++] = index;
+		//ft_printf("adding vertex %d\n", index);
 		curwidth--;
 	}
-	farm->path->vertexes[farm->path->len++] = 0;
 	return (farm->path->len);
 }
 
@@ -223,6 +232,7 @@ void	algo(t_antfarm *farm)
 	antsleft = farm->num_of_ants;
 	while (antsleft > 0)
 	{
+		//ft_printf("ants left %d\n", antsleft);
 		i = -1;
 		while (++i < farm->max_ant_per_step && antsleft)
 			if (!find_da_wei(farm, curstep, antsleft, 1))
@@ -279,6 +289,7 @@ int		main(int ac, char **av)
 	ft_lstpushback(&readlist, ft_lstnew((void*)&line, sizeof(char*)));
 	while ((get_next_line(0, &line) > 0))
 	{
+		//ft_printf("%s\n", line);
 		if (!parse_line(line, farm))
 		{
 			free(line);
@@ -290,6 +301,8 @@ int		main(int ac, char **av)
 	optimize_graph(farm);
 	print_read_list(readlist);
 	width_numeration(farm);
+	//for (int i = 0; i < farm->num_of_rooms; i++)
+	//	ft_printf("%d %s %d\n", i, farm->room_arr[i]->name, farm->old_to_new[i]);
 	algo(farm);
 	print_ans(farm);
 	//system("leaks lem-in");

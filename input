@@ -1,3 +1,19 @@
+2
+##start
+start 0 0
+##end
+finish 1 1
+shortest_vertex 2 2
+long_v3 5 5
+long_v2 3 3
+long_v1 4 4
+start-shortest_vertex
+start-long_v3
+long_v3-long_v2
+long_v2-long_v1
+long_v1-finish
+shortest_vertex-finish
+
 3
 2 5 0
 ##start
