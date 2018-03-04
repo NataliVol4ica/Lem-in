@@ -98,7 +98,8 @@ void	pave_da_wei(t_antfarm *farm, size_t step, size_t antsleft)
 	while (++i < farm->path->len)
 	{
 		farm->steps[step + i][farm->num_of_ants - antsleft] = farm->path->vertexes[i];
-		farm->busy_vertexes[step + i][farm->path->vertexes[i]] = 1;
+		if (farm->path->vertexes[i] != 1)
+			farm->busy_vertexes[step + i][farm->path->vertexes[i]] = 1;
 	}
 }
 
