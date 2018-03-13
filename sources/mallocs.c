@@ -65,7 +65,7 @@ void	algo_mallocs(t_antfarm *farm)
 
 	if (!(farm->loadness = (int*)malloc(sizeof(int) * farm->num_of_rooms)))
 		mall_error();
-	if (!(farm->steps = (int**)malloc(sizeof(int*) * 
+	if (!(farm->steps = (int**)malloc(sizeof(int*) *
 					(farm->len_of_shortest_path + farm->num_of_ants))))
 		mall_error();
 	if (!(farm->busy_vertexes = (_Bool**)malloc(sizeof(_Bool*) *
@@ -91,6 +91,7 @@ void	algo_mallocs2(t_antfarm *farm)
 {
 	if (!(farm->path = (t_path*)malloc(sizeof(t_path))))
 		mall_error();
-	if (!(farm->path->vertexes = (int*)malloc(sizeof(int) * farm->num_of_rooms)))
+	if (!(farm->path->vertexes = (int*)malloc(sizeof(int) *
+		farm->num_of_rooms)))
 		mall_error();
 }

@@ -17,7 +17,7 @@ void	fill_loadness(t_antfarm *farm, _Bool *busy_vertexes)
 	int		curwidth;
 	size_t	i;
 	size_t	j;
-	
+
 	farm->loadness[0] = 1;
 	farm->loadness[1] = 0;
 	curwidth = farm->max_width - 1;
@@ -29,7 +29,7 @@ void	fill_loadness(t_antfarm *farm, _Bool *busy_vertexes)
 			{
 				farm->loadness[i] = 0;
 				j = -1;
-				while(++j < farm->rooms->size)
+				while (++j < farm->rooms->size)
 					if (!busy_vertexes[j] && farm->rooms->vertexes[i][j] &&
 						(farm->width_level[j] == curwidth + 1 || j == 0))
 						farm->loadness[i] += farm->loadness[j];

@@ -41,7 +41,7 @@ static void	wnum_norm(t_antfarm *farm, int *num_of_used,
 		}
 	if (min < farm->max_ant_per_step && farm->len_of_shortest_path < 0)
 		farm->max_ant_per_step = min;
-	*windex = *windex + 1;	
+	*windex = *windex + 1;
 }
 
 void		width_numeration(t_antfarm *farm)

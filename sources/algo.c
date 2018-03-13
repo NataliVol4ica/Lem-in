@@ -76,15 +76,15 @@ static int	find_da_wei(t_antfarm *farm, size_t curstep,
 	if (d.diff >= 0 && search_optimal)
 		while (i < d.diff + 2 &&
 			curstep + i + 1 < farm->len_of_shortest_path + farm->num_of_ants)
+		{
+			if (d.minwidthlevel + 1 -
+				find_da_wei(farm, curstep + i, antsleft, 0) - i >= antsleft)
 			{
-				if (d.minwidthlevel + 1 -
-					find_da_wei(farm, curstep + i, antsleft, 0) - i >= antsleft)
-				{
-					sleep = i - 1;
-					return (0);
-				}
-				i++;
+				sleep = i - 1;
+				return (0);
 			}
+			i++;
+		}
 	fill_path(farm, &d, curstep);
 	return (farm->path->len);
 }
@@ -104,7 +104,7 @@ void		algo(t_antfarm *farm)
 		i = -1;
 		while (++i < farm->max_ant_per_step && antsleft)
 			if (!find_da_wei(farm, curstep, antsleft, 1))
-				break;
+				break ;
 			else
 			{
 				pave_da_wei(farm, curstep, antsleft);
