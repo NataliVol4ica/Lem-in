@@ -99,6 +99,8 @@ void		algo(t_antfarm *farm)
 	algo_mallocs2(farm);
 	curstep = 0;
 	antsleft = farm->num_of_ants;
+	if (farm->rooms->vertexes[0][1])
+		farm->max_ant_per_step = farm->num_of_ants;
 	while (antsleft > 0)
 	{
 		i = -1;

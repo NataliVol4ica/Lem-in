@@ -54,6 +54,7 @@ void		optimization_mallocs(t_antfarm *farm);
 void		new_graph_mallocs(t_antfarm *farm);
 void		algo_mallocs(t_antfarm *farm);
 void		algo_mallocs2(t_antfarm *farm);
+
 /*
 ** ERRORS
 */
